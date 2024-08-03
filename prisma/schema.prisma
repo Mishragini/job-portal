@@ -14,27 +14,32 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
   name          String?
-  jobs          Job[]    
+  jobs          Job[]
   notifications Notification[]
 }
 
 model Job {
-  id         Int      @id @default(autoincrement())
-  title      String
-  description String
-  createdAt  DateTime @default(now())
-  author     User     @relation(fields: [authorId], references: [id])
-  authorId   Int
+  id             Int      @id @default(autoincrement())
+  title          String
+  company        String
+  location       String
+  jobType        String
+  jobDescription String
+  requirements   String
+  salaryRange    String
+  createdAt      DateTime @default(now())
+  author         User     @relation(fields: [authorId], references: [id])
+  authorId       Int
 }
 
 model Notification {
-  id         Int      @id @default(autoincrement())
-  message    String
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  createdAt  DateTime @default(now())
-  read       Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  message   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
 }
