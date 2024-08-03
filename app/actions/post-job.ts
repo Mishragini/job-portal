@@ -58,7 +58,8 @@ export async function postJob(jobDetails: {
         // Create notifications for all users except the author
         const notifications = users.map(user => ({
             message: `New job posted: ${title} at ${company}`,
-            userId: user.id
+            userId: user.id,
+            jobId: job.id
         }));
 
         await prisma.notification.createMany({
