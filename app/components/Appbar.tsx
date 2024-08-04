@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Notification } from "./Notifications"
 import { getUnreadNotifications } from "../actions/get-notifications"
+import AnimatedSearchBar from "./Searchbar"
 
 export const Appbar = () => {
     const { data: session, status } = useSession()
@@ -73,10 +74,11 @@ export const Appbar = () => {
                         </Link>
                     </div>
                 </nav>
-                <div className="flex-grow flex justify-center items-center">
-                    <Link href="/" className="text-5xl font-bold text-white text-center">
+                <div className="flex-grow flex flex-col justify-center items-center">
+                    <Link href="/" className="text-5xl font-bold text-white text-center mb-4">
                         100xdevs | Job Portal
                     </Link>
+                    <AnimatedSearchBar />
                 </div>
             </div>
         </header>

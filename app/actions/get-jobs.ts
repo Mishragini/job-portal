@@ -14,3 +14,15 @@ export async function getJobById(jobId:number){
     })
     return job;
 }
+
+export async function getJobsByAuthorId(authorEmail:string){
+    const userJobs = await prisma.job.findMany({
+        where:{
+            author:{
+                email:authorEmail
+            }
+        }
+    })
+
+    return userJobs;
+}

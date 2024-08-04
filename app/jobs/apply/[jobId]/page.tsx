@@ -6,7 +6,7 @@ import { getSignedURL } from "@/app/actions/getSignedUrl";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-interface Job {
+export interface Job {
     id: number;
     title: string;
     company: string;
@@ -55,7 +55,7 @@ export default function JobApplication({ params }: { params: { jobId: string } }
         try {
             if (file) {
                 console.log("inside file")
-                const signedUrlResult = await getSignedURL();
+                const signedUrlResult = await getSignedURL(file.name);
                 console.log(" signedUrlResult", signedUrlResult.error)
                 if ('error' in signedUrlResult) {
                     throw new Error(signedUrlResult.error?.message);

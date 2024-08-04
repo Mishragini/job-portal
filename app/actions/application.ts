@@ -29,3 +29,12 @@ export async function postApplication(applicationDetails: {
     }
 }
 
+export async function fetchApplicationsByJobId(jobId: number) {
+    const applications = await prisma.application.findMany({
+        where: {
+            jobId
+        }
+    })
+    return applications;
+}
+

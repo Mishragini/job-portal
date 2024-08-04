@@ -2,22 +2,13 @@
 import { useEffect, useState } from "react";
 import { getAllJobs } from "../actions/get-jobs";
 import JobCard from "./JobCard";
-
-interface Job {
-    id: number;
-    title: string;
-    company: string;
-    location: string;
-    jobType: string;
-    jobDescription: string;
-    requirements: string;
-    salaryRange: string;
-    createdAt: Date;
-    authorId: number;
-}
+import { Job } from "../jobs/apply/[jobId]/page";
+import { useRecoilValue } from "recoil";
+import { searchBarInput } from "@/store/state";
 
 const JobsList = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
+    const searchInput = useRecoilValue(searchBarInput);
 
     const init = async () => {
         const allJobs = await getAllJobs();
@@ -32,14 +23,22 @@ const JobsList = () => {
         return <div>Loading...</div>
     }
 
+    const filteredJobs = (searchInput !=='') ? jobs.filter(job =>
+        job.title.toLowerCase().includes(searchInput.toLowerCase())
+    ) : jobs;
+
     return (
         <div className="w-full">
-            {jobs.map(job => (
-                <JobCard
-                    key={job.id}
-                    job={job}
-                />
-            ))}
+            {filteredJobs.length > 0 ? (
+                filteredJobs.map(job => (
+                    <JobCard
+                        key={job.id}
+                        job={job}
+                    />
+                ))
+            ) : (
+                <div>No jobs found</div>
+            )}
         </div>
     );
 }

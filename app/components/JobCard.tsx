@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Job } from '../jobs/apply/[jobId]/page';
 
-interface Job {
-    id: number;
-    title: string;
-    company: string;
-    location: string;
-    jobType: string;
-    jobDescription: string;
-    requirements: string;
-    salaryRange: string;
-    createdAt: Date;
-    authorId: number;
-}
+
 
 interface JobCardProps {
     job: Job;
+    isAuthor?: boolean
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job }) => {
+const JobCard: React.FC<JobCardProps> = ({ job, isAuthor }) => {
     const router = useRouter();
     const [isHovered, setIsHovered] = useState(false);
     const cardColors = [
@@ -47,6 +38,9 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
     const handleApply = () => {
         router.push(`/jobs/apply/${job.id}`);
+    };
+    const handleView = () => {
+        router.push(`/jobs/my-job-postings/${job.id}`);
     };
 
     return (
@@ -104,10 +98,10 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
                     }`}
             >
                 <button
-                    onClick={handleApply}
+                    onClick={(isAuthor) ? handleView : handleApply}
                     className="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition duration-300"
                 >
-                    Apply Now
+                    {(isAuthor) ? "View" : "Apply Now"}
                 </button>
             </div>
         </div>

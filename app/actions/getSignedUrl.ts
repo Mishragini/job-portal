@@ -15,7 +15,7 @@ const s3ClientConfig: S3ClientConfig = {
 
 const s3Client = new S3Client(s3ClientConfig);
 
-export async function getSignedURL() {
+export async function getSignedURL(fileName:string) {
   const session = await getServerSession(authOptions);
   console.log(session);
 
@@ -25,7 +25,7 @@ export async function getSignedURL() {
 
   const putObjectCommand = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME!,
-    Key: "test",
+    Key: fileName,
   });
 
   const signedUrl = await getSignedUrl(s3Client, putObjectCommand, {
