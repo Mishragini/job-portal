@@ -22,7 +22,7 @@ model User {
 }
 
 model Job {
-  id             Int      @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   title          String
   company        String
   location       String
@@ -30,9 +30,12 @@ model Job {
   jobDescription String
   requirements   String
   salaryRange    String
-  createdAt      DateTime @default(now())
-  author         User     @relation(fields: [authorId], references: [id])
+  createdAt      DateTime      @default(now())
+  author         User          @relation(fields: [authorId], references: [id])
   authorId       Int
+  applications   Application[]
+
+  @@index([authorId])
 }
 
 model Notification {
@@ -43,4 +46,17 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   read      Boolean  @default(false)
+}
+
+model Application {
+  id             Int    @id @default(autoincrement())
+  applicantName  String
+  applicantEmail String
+  phoneNumber    String
+  coverLetter    String
+  resumeUrl      String
+  jobId          Int
+  job            Job    @relation(fields: [jobId], references: [id])
+
+  @@index([jobId])
 }
