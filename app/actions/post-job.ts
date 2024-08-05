@@ -17,7 +17,6 @@ export async function postJob(jobDetails: {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
-    // Find the author by email
     const author = await prisma.user.findUnique({
         where: {
             email: authorEmail

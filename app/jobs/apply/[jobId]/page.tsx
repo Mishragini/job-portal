@@ -6,7 +6,7 @@ import { getSignedURL } from "@/app/actions/getSignedUrl";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
-
+import { useRouter } from "next/navigation";
 export interface Job {
     id: number;
     title: string;
@@ -29,6 +29,7 @@ interface ApplicationInputs {
 
 export default function JobApplication({ params }: { params: { jobId: string } }) {
     const session = useSession();
+    const router = useRouter();
     const [job, setJob] = useState<Job | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,10 +73,8 @@ export default function JobApplication({ params }: { params: { jobId: string } }
                     },
                 });
 
-                // The URL where the file can be accessed
                 const resumeUrl = url.split('?')[0];
 
-                // Post application
                 await postApplication({
                     applicantName: data.fullName,
                     applicantEmail: data.email,
@@ -86,6 +85,7 @@ export default function JobApplication({ params }: { params: { jobId: string } }
                 });
 
                 alert("Application submitted successfully!");
+                router.push('/')
             } else {
                 throw new Error('No file selected');
             }
