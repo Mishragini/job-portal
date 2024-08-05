@@ -29,7 +29,7 @@ const UserJobs = () => {
             };
             getJobs();
         }
-    }, [authorEmail]);
+    }, []);
 
     if (status === "loading") {
         return (

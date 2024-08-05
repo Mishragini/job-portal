@@ -8,14 +8,14 @@ import { authOptions } from "@/lib/auth";
 const s3ClientConfig: S3ClientConfig = {
   region: process.env.AWS_BUCKET_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 };
 
 const s3Client = new S3Client(s3ClientConfig);
 
-export async function getSignedURL(fileName:string) {
+export async function getSignedURL(fileName: string) {
   const session = await getServerSession(authOptions);
   console.log(session);
 

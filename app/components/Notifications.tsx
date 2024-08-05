@@ -20,16 +20,17 @@ export const Notification = ({ setShowNotification }: { setShowNotification: Dis
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [loading, setLoading] = useState(false)
 
-    const fetchNotifications = async () => {
-        setLoading(true)
-        const response = await getAllNotifications(session?.data?.user?.email!)
-        setNotifications(response)
-        setLoading(false)
-    }
+   
 
     useEffect(() => {
+        const fetchNotifications = async () => {
+            setLoading(true)
+            const response = await getAllNotifications(session?.data?.user?.email!)
+            setNotifications(response)
+            setLoading(false)
+        }
         fetchNotifications()
-    }, [fetchNotifications])
+    }, [])
 
     const markAsRead = async (id: number) => {
         await markNotificationAsRead(id)

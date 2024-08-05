@@ -14,20 +14,20 @@ export const Appbar = () => {
 
 
 
-    const fetchUnreadCount = async () => {
-        try {
-            const response = await getUnreadNotifications(session?.data?.user?.email!);
-            setUnreadCount(response?.notifications?.length!)
-        } catch (error) {
-            console.error('Error fetching unread count:', error)
-        }
-    }
-
     useEffect(() => {
+        const fetchUnreadCount = async () => {
+            try {
+                const response = await getUnreadNotifications(session?.data?.user?.email!);
+                setUnreadCount(response?.notifications?.length!)
+            } catch (error) {
+                console.error('Error fetching unread count:', error)
+            }
+        }
+    
         if (session?.data?.user?.email) {
             fetchUnreadCount()
         }
-    }, [fetchUnreadCount,session?.data?.user?.email])
+    }, [session?.data?.user?.email])
 
 
     return (

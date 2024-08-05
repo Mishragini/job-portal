@@ -29,7 +29,7 @@ const JobDetails = ({ params }: { params: { jobId: string } }) => {
         };
 
         fetchJobDetails();
-    }, [params.jobId]);
+    }, []);
 
     if (!job) {
         return <div className="flex items-center justify-center h-screen text-2xl font-bold text-purple-600">Loading...</div>;

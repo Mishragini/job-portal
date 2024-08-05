@@ -38,20 +38,21 @@ export default function JobApplication({ params }: { params: { jobId: string } }
 
     const { register, handleSubmit, formState: { errors } } = useForm<ApplicationInputs>();
 
-    async function getJobFromDb() {
-        try {
-            const fetchedJob = await getJobById(parseInt(params.jobId));
-            setJob(fetchedJob);
-        } catch (error) {
-            console.error("Error fetching job:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    }
+    
 
     useEffect(() => {
+        async function getJobFromDb() {
+            try {
+                const fetchedJob = await getJobById(parseInt(params.jobId));
+                setJob(fetchedJob);
+            } catch (error) {
+                console.error("Error fetching job:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
         getJobFromDb();
-    }, [getJobFromDb]);
+    }, []);
 
     const onSubmit: SubmitHandler<ApplicationInputs> = async (data) => {
         setIsSubmitting(true);

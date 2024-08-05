@@ -12,16 +12,17 @@ const JobsList = () => {
     const searchInput = useRecoilValue(searchBarInput);
     const [loading, setLoading] = useRecoilState(loadingState);
 
-    const init = async () => {
-        setLoading(true);
-        const allJobs = await getAllJobs();
-        setJobs(allJobs);
-        setLoading(false);
-    };
+    
 
     useEffect(() => {
+        const init = async () => {
+            setLoading(true);
+            const allJobs = await getAllJobs();
+            setJobs(allJobs);
+            setLoading(false);
+        };
         init();
-    }, [init]);
+    }, []);
 
     const filteredJobs = searchInput !== '' ? jobs.filter((job) =>
         job.title.toLowerCase().includes(searchInput.toLowerCase())
