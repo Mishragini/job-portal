@@ -5,6 +5,7 @@ import { postApplication } from "@/app/actions/application";
 import { getSignedURL } from "@/app/actions/getSignedUrl";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { signIn, useSession } from "next-auth/react";
 
 export interface Job {
     id: number;
@@ -27,6 +28,7 @@ interface ApplicationInputs {
 }
 
 export default function JobApplication({ params }: { params: { jobId: string } }) {
+    const session = useSession();
     const [job, setJob] = useState<Job | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +50,7 @@ export default function JobApplication({ params }: { params: { jobId: string } }
 
     useEffect(() => {
         getJobFromDb();
-    }, [params.jobId]);
+    }, [getJobFromDb]);
 
     const onSubmit: SubmitHandler<ApplicationInputs> = async (data) => {
         setIsSubmitting(true);
@@ -130,7 +132,7 @@ export default function JobApplication({ params }: { params: { jobId: string } }
                     <p className="text-gray-600">{job.requirements}</p>
                 </div>
 
-                <div className="bg-white bg-opacity-90 shadow-lg rounded-xl p-8 backdrop-blur-sm">
+                {(session.status === 'authenticated') ? <div className="bg-white bg-opacity-90 shadow-lg rounded-xl p-8 backdrop-blur-sm">
                     <h2 className="text-2xl font-semibold mb-6 text-gray-800">Apply for this position</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <div>
@@ -183,7 +185,16 @@ export default function JobApplication({ params }: { params: { jobId: string } }
                             {isSubmitting ? 'Submitting...' : 'Submit Application'}
                         </button>
                     </form>
-                </div>
+                </div> : <div className="bg-white bg-opacity-90 shadow-lg rounded-xl p-8 backdrop-blur-sm text-center">
+                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">Sign in to Apply</h2>
+                    <p className="mb-6 text-gray-600">You need to be signed in to apply for this position.</p>
+                    <button
+                        onClick={() => signIn()}
+                        className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-md hover:from-purple-600 hover:to-pink-600 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                    >
+                        Sign In to Apply
+                    </button>
+                </div>}
             </div>
         </div>
     );

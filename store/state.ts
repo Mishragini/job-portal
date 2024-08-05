@@ -5,3 +5,7 @@ export const searchBarInput = atom({
     default: ''
 })
 
+export const loadingState = atom({
+    key: 'loadingState',
+    default: false
+})

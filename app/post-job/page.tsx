@@ -2,11 +2,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { postJob } from '../actions/post-job';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 
 const PostJob = () => {
-    const session = useSession();
-    console.log(session);
+    const { data: session, status } = useSession();
     const router = useRouter();
     const [jobDetails, setJobDetails] = useState({
         title: '',
@@ -25,16 +24,33 @@ const PostJob = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        // Here you would typically send the data to your backend
-        const result = await postJob({ ...jobDetails, authorEmail: session?.data?.user?.email! });
-        console.log('Job details submitted:', jobDetails);
-        // Redirect to a success page or job listings
-        router.push('/');
+        if (status === 'authenticated') {
+            const result = await postJob({ ...jobDetails, authorEmail: session?.user?.email! });
+            console.log('Job details submitted:', jobDetails);
+            router.push('/');
+        }
     };
+
+    if (status === 'unauthenticated') {
+        return (
+            <div className='bg-slate-100 h-screen flex items-center justify-center'>
+                <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-xl text-center">
+                    <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">You have not signed in</h1>
+                    <p className="mb-4 text-gray-700">Sign in to post a job</p>
+                    <button
+                        onClick={() => signIn()}
+                        className="py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className='bg-slate-100'>
-            <div className="max-w-2xl mx-auto  p-6 bg-white rounded-lg shadow-xl">
+            <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-xl">
                 <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">Post a New Job</h1>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>

@@ -1,7 +1,8 @@
 'use server';
 import prisma from "@/prisma/db";
-
-
+import { Resend } from "resend";
+import { render } from '@react-email/render';
+import JobNotificationEmail from '../components/email-template'
 export async function postJob(jobDetails: {
     title: string;
     company: string;
@@ -13,6 +14,8 @@ export async function postJob(jobDetails: {
     authorEmail: string;
 }) {
     const { title, company, location, type, description, requirements, salary, authorEmail } = jobDetails;
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
     // Find the author by email
     const author = await prisma.user.findUnique({
@@ -28,7 +31,6 @@ export async function postJob(jobDetails: {
     const authorId = author.id;
 
     try {
-        // Create the job in the database
         const job = await prisma.job.create({
             data: {
                 title,
@@ -44,7 +46,6 @@ export async function postJob(jobDetails: {
             }
         });
 
-        // Get all users except the author
         const users = await prisma.user.findMany({
             where: {
                 id: {
@@ -53,7 +54,15 @@ export async function postJob(jobDetails: {
             }
         });
 
-        // Create notifications for all users except the author
+        users.map(async (user) => {
+            await resend.emails.send({
+                from: '100xdevs@gmail.com',
+                to: user.email,
+                subject: 'New Job Posted at 100xdevs Job Portal',
+                react: JobNotificationEmail({ jobTitle: title, company, jobId: job.id, baseUrl: "http://localhost:3000" })
+            });
+        });
+
         const notifications = users.map(user => ({
             message: `New job posted: ${title} at ${company}`,
             userId: user.id,

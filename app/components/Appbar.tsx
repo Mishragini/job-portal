@@ -8,24 +8,27 @@ import { getUnreadNotifications } from "../actions/get-notifications"
 import AnimatedSearchBar from "./Searchbar"
 
 export const Appbar = () => {
-    const { data: session, status } = useSession()
+    const session = useSession()
     const [showNotifications, setShowNotifications] = useState(false)
     const [unreadCount, setUnreadCount] = useState(0);
 
-    useEffect(() => {
-        if (session) {
-            fetchUnreadCount()
-        }
-    }, [session])
+
 
     const fetchUnreadCount = async () => {
         try {
-            const response = await getUnreadNotifications();
-            setUnreadCount(response.length)
+            const response = await getUnreadNotifications(session?.data?.user?.email!);
+            setUnreadCount(response?.notifications?.length!)
         } catch (error) {
             console.error('Error fetching unread count:', error)
         }
     }
+
+    useEffect(() => {
+        if (session?.data?.user?.email) {
+            fetchUnreadCount()
+        }
+    }, [fetchUnreadCount,session?.data?.user?.email])
+
 
     return (
         <header className="relative w-full h-[400px]">
@@ -39,7 +42,7 @@ export const Appbar = () => {
             <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col">
                 <nav className="flex justify-end items-center p-4">
                     <div className="flex justify-center items-center space-x-4">
-                        {session ? (
+                        {session?.data?.user?.email ? (
                             <>
                                 <div className="relative">
                                     <button
@@ -55,11 +58,11 @@ export const Appbar = () => {
                                     </button>
                                     {showNotifications && (
                                         <div className="absolute right-0 w-[400px] bg-white rounded-lg shadow-xl z-10 transform translate-x-1/3">
-                                            <Notification />
+                                            <Notification setShowNotification={setShowNotifications} />
                                         </div>
                                     )}
                                 </div>
-                                <span className="text-white">Signed in as {session.user?.email}</span>
+                                <span className="text-white">Signed in as {session?.data?.user?.email}</span>
                                 <button onClick={() => signOut()} className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200">
                                     Sign out
                                 </button>
